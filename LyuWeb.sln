@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LyuWeb", "LyuWeb\LyuWeb.csproj", "{1BD6FEDB-25A6-4ABC-A41E-DFFD3973062F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LyuWeb.Tests", "LyuWeb.Tests\LyuWeb.Tests.csproj", "{F2159AC9-728D-4A24-BF77-350AFE3AEF10}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{B2F081AB-E65E-410A-A6D1-32CE0FE05189}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{2E4584AA-B0C2-4034-A89C-D6F259304EA8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{F279DA5F-77DC-4220-B8B6-E2AD37FA95CE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{929E94D3-97C8-49DF-8202-5AF927324D7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyu.Core", "Libraries\Lyu.Core\Lyu.Core.csproj", "{31C9CDA4-0410-431C-8AF3-8A7FD0373A51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyu.Data", "Libraries\Lyu.Data\Lyu.Data.csproj", "{41E03057-6AFC-47DB-9089-09837897E5AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyu.Services", "Libraries\Lyu.Services\Lyu.Services.csproj", "{E56FF9C8-FEA1-4D83-A56E-D2BDC8827AD2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1BD6FEDB-25A6-4ABC-A41E-DFFD3973062F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BD6FEDB-25A6-4ABC-A41E-DFFD3973062F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BD6FEDB-25A6-4ABC-A41E-DFFD3973062F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BD6FEDB-25A6-4ABC-A41E-DFFD3973062F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2159AC9-728D-4A24-BF77-350AFE3AEF10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2159AC9-728D-4A24-BF77-350AFE3AEF10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2159AC9-728D-4A24-BF77-350AFE3AEF10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2159AC9-728D-4A24-BF77-350AFE3AEF10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31C9CDA4-0410-431C-8AF3-8A7FD0373A51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31C9CDA4-0410-431C-8AF3-8A7FD0373A51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31C9CDA4-0410-431C-8AF3-8A7FD0373A51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31C9CDA4-0410-431C-8AF3-8A7FD0373A51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41E03057-6AFC-47DB-9089-09837897E5AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41E03057-6AFC-47DB-9089-09837897E5AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41E03057-6AFC-47DB-9089-09837897E5AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41E03057-6AFC-47DB-9089-09837897E5AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E56FF9C8-FEA1-4D83-A56E-D2BDC8827AD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E56FF9C8-FEA1-4D83-A56E-D2BDC8827AD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E56FF9C8-FEA1-4D83-A56E-D2BDC8827AD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E56FF9C8-FEA1-4D83-A56E-D2BDC8827AD2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1BD6FEDB-25A6-4ABC-A41E-DFFD3973062F} = {2E4584AA-B0C2-4034-A89C-D6F259304EA8}
+		{F2159AC9-728D-4A24-BF77-350AFE3AEF10} = {929E94D3-97C8-49DF-8202-5AF927324D7A}
+		{31C9CDA4-0410-431C-8AF3-8A7FD0373A51} = {B2F081AB-E65E-410A-A6D1-32CE0FE05189}
+		{41E03057-6AFC-47DB-9089-09837897E5AF} = {B2F081AB-E65E-410A-A6D1-32CE0FE05189}
+		{E56FF9C8-FEA1-4D83-A56E-D2BDC8827AD2} = {B2F081AB-E65E-410A-A6D1-32CE0FE05189}
+	EndGlobalSection
+EndGlobal

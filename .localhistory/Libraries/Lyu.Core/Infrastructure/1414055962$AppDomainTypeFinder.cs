@@ -1,0 +1,222 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace Lyu.Core.Infrastructure
+{
+    public class AppDomainTypeFinder:ITypeFinder
+    {
+        #region Fields
+
+        private bool ignoreReflectionErrors = true;
+        private bool loadAppDomainAssemblies = true;
+        private string assemblySkipLoadingPattern = "^System|^mscorlib|^Microsoft|^AjaxControlToolkit|^Antlr3|^Autofac|^AutoMapper|^Castle|^ComponentArt|^CppCodeProvider|^DotNetOpenAuth|^EntityFramework|^EPPlus|^FluentValidation|^ImageResizer|^itextsharp|^log4net|^MaxMind|^MbUnit|^MiniProfiler|^Mono.Math|^MvcContrib|^Newtonsoft|^NHibernate|^nunit|^Org.Mentalis|^PerlRegex|^QuickGraph|^Recaptcha|^Remotion|^RestSharp|^Rhino|^Telerik|^Iesi|^TestDriven|^TestFu|^UserAgentStringLibrary|^VJSharpCodeProvider|^WebActivator|^WebDev|^WebGrease";
+        private string assemblyRestrictToLoadingPattern = ".*";
+        private IList<string> assemblyNames = new List<string>();
+
+        #endregion
+        public AppDomainTypeFinder()
+        {
+        }
+        #region Properties
+
+        public virtual AppDomain App
+        {
+            get { return AppDomain.CurrentDomain; }
+        }
+
+        public bool LoadAppDomainAssemblies
+        {
+            get { return loadAppDomainAssemblies; }
+            set { loadAppDomainAssemblies = value; }
+        }
+
+        public IList<string> AssemblyNames
+        {
+            get { return assemblyNames; }
+            set { assemblyNames = value; }
+        }
+
+        public string AssemblySkipLoadingPattern
+        {
+            get { return assemblySkipLoadingPattern; }
+            set { assemblySkipLoadingPattern = value; }
+        }
+
+        public string AssemblyRestrictToLoadingPattern
+        {
+            get { return assemblyRestrictToLoadingPattern; }
+            set { assemblyRestrictToLoadingPattern = value; }
+        }
+
+        #endregion
+        public IList<Assembly> GetAssemblies()
+        {
+            var addedAssemblyNames = new List<string>();
+            var assemblies = new List<Assembly>();
+
+            if (LoadAppDomainAssemblies)
+            {
+                AddAssembliesInAppDomain(addedAssemblyNames, assemblies);
+            }
+            AddConfiguredAssemblies(addedAssemblyNames, assemblies);
+
+            return assemblies;
+        }
+
+        private void AddAssembliesInAppDomain(List<string> addedAssemblyNames, List<Assembly> assemblies)
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if (Matches(assembly.FullName))
+                {
+                    if (!addedAssemblyNames.Contains(assembly.FullName))
+                    {
+                        assemblies.Add(assembly);
+                        addedAssemblyNames.Add(assembly.FullName);
+                    }
+                }
+            }
+        }
+
+        public virtual bool Matches(string assemblyFullName)
+        {
+            return !Matches(assemblyFullName,AssemblySkipLoadingPattern)
+                 && Matches(assemblyFullName, AssemblyRestrictToLoadingPattern);
+        }
+        protected virtual bool Matches(string assemblyFullName, string pattern)
+        {
+            return Regex.IsMatch(assemblyFullName, pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        }
+        protected virtual void AddConfiguredAssemblies(List<string> addedAssemblyNames, List<Assembly> assemblies)
+        {
+            foreach (var assemblyName in AssemblyNames)
+            {
+                Assembly assembly = Assembly.Load(assemblyName);
+
+                if (!addedAssemblyNames.Contains(assembly.FullName))
+                {
+                    assemblies.Add(assembly);
+                    addedAssemblyNames.Add(assembly.FullName);
+                }
+            }
+        }
+        protected virtual void LoadMatchingAssemblies(string directoryPath)
+        {
+            var loadedAssemblyNames = new List<string>();
+            foreach (Assembly a in GetAssemblies())
+            {
+                loadedAssemblyNames.Add(a.FullName);
+            }
+
+            if (!Directory.Exists(directoryPath))
+            {
+                return;
+            }
+
+            foreach (string dllPath in Directory.GetFiles(directoryPath, "*.dll"))
+            {
+                try
+                {
+                    var an = AssemblyName.GetAssemblyName(dllPath);
+                    if (Matches(an.FullName) && !loadedAssemblyNames.Contains(an.FullName))
+                    {
+                        App.Load(an);
+                    }
+
+                    //old loading stuff
+                    //Assembly a = Assembly.ReflectionOnlyLoadFrom(dllPath);
+                    //if (Matches(a.FullName) && !loadedAssemblyNames.Contains(a.FullName))
+                    //{
+                    //    App.Load(a.FullName);
+                    //}
+                }
+                catch (BadImageFormatException ex)
+                {
+                    Trace.TraceError(ex.ToString());
+                }
+            }
+        }
+        public IEnumerable<Type> FindClassesOfType(Type assignTypeFrom, bool onlyConcreteClasses = true)
+        {
+            return FindClassesOfType(assignTypeFrom, GetAssemblies(), onlyConcreteClasses);
+        }
+
+        public IEnumerable<Type> FindClassesOfType(Type assignTypeFrom, IEnumerable<Assembly> assemblies, bool onlyConcreteClasses = true)
+        {
+            var result = new List<Type>();
+
+
+            try
+            {
+                foreach (var assembly in assemblies)
+                {
+                    Type[] types = null;
+
+                    try
+                    {
+                        types = assembly.GetTypes();
+                    }
+                    catch (Exception)
+                    {
+                        if (!ignoreReflectionErrors)
+                        {
+                            throw;
+                        }
+                    }
+                    if (types != null)
+                    {
+                        foreach (var t in types)
+                        {
+                            if (assignTypeFrom.IsAssignableFrom(t) || (assignTypeFrom.IsGenericTypeDefinition && DoesTypeImplementOpenGeneric(t,assignTypeFrom)))
+                            {
+                                
+                            }
+                        }
+                    }
+
+                }
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+            return result;
+        }
+
+        protected virtual bool DoesTypeImplementOpenGeneric(Type type, Type openGeneric)
+        {
+            try
+            {
+                var genericTypeDefinition = openGeneric.GetGenericTypeDefinition();
+
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public IEnumerable<Type> FindClassesOfType<T>(bool onlyConcreteClasses = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Type> FindClassesOfType<T>(IEnumerable<Assembly> assemblies, bool onlyConcreteClasses = true)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+    }
+}
